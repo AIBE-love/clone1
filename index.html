@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>웨이 카드</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #1a1a1a;
+        overflow: hidden;
+        font-family: "Noto Serif KR", serif;
+      }
+
+      .card {
+        width: 400px;
+        height: 600px;
+        position: relative;
+        border-radius: 25px;
+        transform-style: preserve-3d;
+        cursor: pointer;
+        transition: transform 0.3s;
+      }
+
+      .card-inner {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 25px;
+        transform-style: preserve-3d;
+        background: url("https://cdn-lostark.game.onstove.com/2022/event/220126_event_M3YUrtR2/images/pc/obj_card1_f.png")
+          center center / cover no-repeat;
+        border: 2px solid #ffd700;
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #ffd700;
+      }
+
+      .card-back {
+        background: url("https://cdn-lostark.game.onstove.com/2022/event/220126_event_M3YUrtR2/images/pc/obj_card1_b.png")
+          center center / cover no-repeat;
+        transform: rotateY(180deg);
+        padding: 20px;
+        font-size: 1.2em;
+      }
+
+      .title,
+      .effect,
+      .description {
+        text-align: center;
+        font-size: 1.5em;
+        margin: 10px;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+      }
+
+      .shine {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 25px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.15) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .rare-mark {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        font-size: 0.9em;
+        font-weight: bold;
+        color: #ffd700;
+        -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.8);
+      }
+
+      /* 3D 회전 효과 */
+      .card:hover {
+        transform: rotateY(180deg);
+      }
+
+      /* 라벨 및 모달 스타일링 */
+      .rare-mark {
+        color: #ff6347; /* Rare, Epic, Legendary 등의 색상 */
+      }
+
+      /* 카드 정보 모달 */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      .modal-content {
+        color: darkgray;
+        background-color: #1a1a1a;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 500px;
+        text-align: center;
+      }
+      .close-Btn {
+        background-color: darkgrey;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card" id="card">
+      <div class="card-inner">
+        <div class="shine"></div>
+        <div class="card-front">
+          <h1 class="title">웨이</h1>
+          <div class="rare-mark">★ Rare</div>
+        </div>
+        <div class="card-back">
+          <h1 class="effect">갖고싶나?</h1>
+          <div class="description">떠상에서 만나요 / Click</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 카드 정보 모달 -->
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <h2>카드 주문 문의</h2>
+        <p>
+          <a
+            href="https://lostark.game.onstove.com/Promotion/Collaboration/220126"
+            >로스트아크 카드 발급</a
+          >
+        </p>
+        <button class="close-Btn" onclick="closeModal()">닫기</button>
+      </div>
+    </div>
+
+    <script>
+      // 카드 클릭 시 모달 창 열기
+      const card = document.getElementById("card");
+      const modal = document.getElementById("modal");
+
+      card.addEventListener("click", () => {
+        modal.style.display = "flex";
+      });
+
+      // 모달 창 닫기
+      function closeModal() {
+        modal.style.display = "none";
+      }
+
+      // 카드에 마우스를 올리면 빛 반사 효과
+      const shine = document.querySelector(".shine");
+      card.addEventListener("mousemove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const angleRad = Math.atan2(y - centerY, x - centerX);
+        const angleDeg = angleRad * (180 / Math.PI);
+
+        shine.style.background = `
+                linear-gradient(
+                    ${angleDeg + 90}deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.15) 50%,
+                    rgba(255, 255, 255, 0) 100%
+                )
+            `;
+        shine.style.opacity = "1";
+      });
+
+      card.addEventListener("mouseleave", () => {
+        shine.style.opacity = "0";
+      });
+    </script>
+  </body>
+</html>
